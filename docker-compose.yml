@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=Admin@123456
+      - DB_NAME=tranding_app
+    depends_on:
+      - db
+    networks:
+      - tranding_app_network
+
+  db:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Admin@123456
+      MYSQL_DATABASE: tranding_app
+      # MYSQL_USER: ${DATABASE_USERNAME}
+      MYSQL_PASSWORD: Admin@123456
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+    command: --default-authentication-plugin=mysql_native_password --wait_timeout=28800 --character-set-server=utf8mb4
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - tranding_app_network
+
+volumes:
+  db-data:
+
+networks:
+  tranding_app_network:
+    driver: bridge
