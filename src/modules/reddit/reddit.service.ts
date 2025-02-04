@@ -28,8 +28,6 @@ export class RedditService {
       },
     );
 
-    console.log('Response:', response.data);
-
     const posts = response.data.data.children.map((item) => ({
       title: item.data.title,
       url: item.data.url,
