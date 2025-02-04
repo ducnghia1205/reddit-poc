@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Controller, Get, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { RedditModule } from './modules/reddit/reddit.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -21,5 +22,7 @@ import { RedditModule } from './modules/reddit/reddit.module';
     }),
     RedditModule,
   ],
+  controllers: [AppController],
 })
+
 export class AppModule {}
