@@ -29,57 +29,60 @@ jobs:
           --health-retries=5
 
     steps:
-      - group: 🔧 Setup Environment
-        steps:
-          - name: Checkout repository
-            uses: actions/checkout@v3
+      - name: 🔧 Setup Environment
+        run: echo "Starting setup..."
 
-          - name: Setup Node.js
-            uses: actions/setup-node@v3
-            with:
-              node-version: 20
-              cache: 'yarn'
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-          - name: Install dependencies
-            run: yarn install --frozen-lockfile
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'yarn'
 
-      - group: 🗄️ Database Setup
-        steps:
-          - name: Wait for MySQL
-            run: |
-              while ! mysqladmin ping -h"127.0.0.1" -P"3306" -u"root" -p"root" --silent; do
-                sleep 1
-                echo "Waiting for MySQL..."
-              done
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-          - name: Run migrations
-            run: yarn migration:run
-            env:
-              DB_HOST: localhost
-              DB_PORT: 3306
-              DB_USER: test
-              DB_PASSWORD: test
-              DB_NAME: test_db
+      - name: 🗄️ Database Setup
+        run: echo "Setting up database..."
 
-      - group: 🧪 Testing
-        steps:
-          - name: Run linting
-            run: yarn lint
+      - name: Wait for MySQL
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P"3306" -u"root" -p"root" --silent; do
+            sleep 1
+            echo "Waiting for MySQL..."
+          done
 
-          - name: Run unit tests
-            run: yarn test
-            env:
-              CI: true
+      - name: Run migrations
+        run: yarn migration:run
+        env:
+          DB_HOST: localhost
+          DB_PORT: 3306
+          DB_USER: test
+          DB_PASSWORD: test
+          DB_NAME: test_db
 
-          - name: Run e2e tests
-            run: yarn test:e2e
-            env:
-              CI: true
-              DB_HOST: localhost
-              DB_PORT: 3306
-              DB_USER: test
-              DB_PASSWORD: test
-              DB_NAME: test_db
+      - name: 🧪 Testing
+        run: echo "Starting tests..."
+
+      - name: Run linting
+        run: yarn lint
+
+      - name: Run unit tests
+        run: yarn test
+        env:
+          CI: true
+
+      - name: Run e2e tests
+        run: yarn test:e2e
+        env:
+          CI: true
+          DB_HOST: localhost
+          DB_PORT: 3306
+          DB_USER: test
+          DB_PASSWORD: test
+          DB_NAME: test_db
 
   build:
     needs: test
@@ -87,25 +90,26 @@ jobs:
     if: github.ref == 'refs/heads/main'
     
     steps:
-      - group: 📦 Build Application
-        steps:
-          - name: Checkout repository
-            uses: actions/checkout@v3
+      - name: 📦 Build Application
+        run: echo "Starting build..."
 
-          - name: Setup Node.js
-            uses: actions/setup-node@v3
-            with:
-              node-version: 20
-              cache: 'yarn'
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-          - name: Install dependencies
-            run: yarn install --frozen-lockfile
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'yarn'
 
-          - name: Build application
-            run: yarn build
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-          - name: Upload build artifacts
-            uses: actions/upload-artifact@v3
-            with:
-              name: build
-              path: dist/
+      - name: Build application
+        run: yarn build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: dist/
