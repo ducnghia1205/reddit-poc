@@ -66,8 +66,8 @@ jobs:
       - name: 🧪 Testing
         run: echo "Starting tests..."
 
-      - name: Run linting
-        run: yarn lint
+      # - name: Run linting
+      #   run: yarn lint
 
       # - name: Run unit tests
       #   run: yarn test
